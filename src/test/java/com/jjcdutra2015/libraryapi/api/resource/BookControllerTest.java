@@ -1,6 +1,7 @@
 package com.jjcdutra2015.libraryapi.api.resource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jjcdutra2015.libraryapi.api.dto.BookDTO;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class BookControllerTest {
 
-    static String BOOK_API = "/api/livros";
+    static String BOOK_API = "/api/books";
 
     @Autowired
     MockMvc mvc;
@@ -32,7 +33,8 @@ public class BookControllerTest {
     @DisplayName("Deve criar um livro com sucesso")
     public void createBook() throws Exception {
 
-        String json = new ObjectMapper().writeValueAsString(null);
+        BookDTO dto = BookDTO.builder().title("As aventuras").author("Autor").isbn("001").build();
+        String json = new ObjectMapper().writeValueAsString(dto);
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post(BOOK_API)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -40,7 +42,7 @@ public class BookControllerTest {
                 .content(json);
 
         mvc.perform(request)
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").isNotEmpty())
                 .andExpect(jsonPath("title").value("Meu livro"))
                 .andExpect(jsonPath("author").value("Autor"))
