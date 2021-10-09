@@ -1,4 +1,4 @@
-package com.jjcdutra2015.libraryapi.api.dto;
+package com.jjcdutra2015.libraryapi.model.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class BookDTO {
+public class Book {
 
     private Long id;
     private String title;
