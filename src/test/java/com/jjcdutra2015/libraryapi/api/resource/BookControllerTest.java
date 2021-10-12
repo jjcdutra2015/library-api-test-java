@@ -2,6 +2,7 @@ package com.jjcdutra2015.libraryapi.api.resource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jjcdutra2015.libraryapi.api.dto.BookDTO;
+import com.jjcdutra2015.libraryapi.exception.BusinessException;
 import com.jjcdutra2015.libraryapi.model.entity.Book;
 import com.jjcdutra2015.libraryapi.service.BookService;
 import org.junit.jupiter.api.DisplayName;
@@ -42,7 +43,7 @@ public class BookControllerTest {
     @DisplayName("Deve criar um livro com sucesso")
     public void createBook() throws Exception {
 
-        BookDTO dto = BookDTO.builder().title("As aventuras").author("Autor").isbn("001").build();
+        BookDTO dto = createNewBook();
 
         Book savedBook = Book.builder().id(10l).title("As aventuras").author("Autor").isbn("001").build();
         BDDMockito.given(service.save(Mockito.any(Book.class))).willReturn(savedBook);
@@ -76,5 +77,28 @@ public class BookControllerTest {
         mvc.perform(request)
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("errors", hasSize(3)));
+    }
+
+    @Test
+    @DisplayName("Deve lançar erro quando criar um livro com isbn já cadastrado por outro")
+    public void createInvalidBookWithIsbnDuplicate() throws Exception {
+        BookDTO dto = createNewBook();
+
+        BDDMockito.given(service.save(Mockito.any(Book.class))).willThrow(new BusinessException("Isbn já cadastrado"));
+
+        String json = new ObjectMapper().writeValueAsString(dto);
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post(BOOK_API)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mvc.perform(request)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("errors", hasSize(1)))
+                .andExpect(jsonPath("errors[0]").value("Isbn já cadastrado"));
+    }
+
+    private BookDTO createNewBook() {
+        return BookDTO.builder().title("As aventuras").author("Autor").isbn("001").build();
     }
 }

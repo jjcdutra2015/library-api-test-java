@@ -1,7 +1,8 @@
 package com.jjcdutra2015.libraryapi.api.resource;
 
 import com.jjcdutra2015.libraryapi.api.dto.BookDTO;
-import com.jjcdutra2015.libraryapi.exception.ApiErrors;
+import com.jjcdutra2015.libraryapi.api.exception.ApiErrors;
+import com.jjcdutra2015.libraryapi.exception.BusinessException;
 import com.jjcdutra2015.libraryapi.model.entity.Book;
 import com.jjcdutra2015.libraryapi.service.BookService;
 import org.modelmapper.ModelMapper;
@@ -34,8 +35,14 @@ public class BookController {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErrors handleExceptionValidation(MethodArgumentNotValidException ex) {
+    public ApiErrors handleValidationException(MethodArgumentNotValidException ex) {
         BindingResult bindingResult = ex.getBindingResult();
         return new ApiErrors(bindingResult);
+    }
+
+    @ExceptionHandler(BusinessException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiErrors handleBusinessException(BusinessException ex) {
+        return new ApiErrors(ex);
     }
 }
