@@ -5,6 +5,8 @@ import com.jjcdutra2015.libraryapi.model.entity.Book;
 import com.jjcdutra2015.libraryapi.model.entity.repository.BookRepository;
 import com.jjcdutra2015.libraryapi.service.BookService;
 
+import java.util.Optional;
+
 public class BookServiceImpl implements BookService {
 
     private BookRepository repository;
@@ -19,5 +21,10 @@ public class BookServiceImpl implements BookService {
             throw new BusinessException("Isbn já cadastrado");
         }
         return repository.save(book);
+    }
+
+    @Override
+    public Optional<Book> getById(Long id) {
+        return Optional.empty();
     }
 }
