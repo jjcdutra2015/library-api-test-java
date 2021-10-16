@@ -2,7 +2,6 @@ package com.jjcdutra2015.libraryapi.api.exception;
 
 import com.jjcdutra2015.libraryapi.exception.BusinessException;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 
 import java.util.ArrayList;
 import java.util.Arrays;
