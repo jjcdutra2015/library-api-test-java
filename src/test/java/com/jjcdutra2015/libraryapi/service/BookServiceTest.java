@@ -99,6 +99,32 @@ public class BookServiceTest {
         assertThat(book.isPresent()).isFalse();
     }
 
+    @Test
+    @DisplayName("Deve deletar um livro")
+    public void deleteTest() {
+        //cenario
+        Book book = createValidBook();
+        book.setId(1L);
+
+        //execucao
+        org.junit.jupiter.api.Assertions.assertDoesNotThrow(() -> service.delete(book));
+
+        //verificacao
+        Mockito.verify(repository, Mockito.times(1)).delete(book);
+    }
+
+    @Test
+    @DisplayName("Deve retornar exceção quando o livro ou o id não existir")
+    public void nonExistBookTest() {
+        Book book = createValidBook();
+
+        Throwable exception = Assertions.catchThrowable(() -> service.delete(book));
+
+        assertThat(exception)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Book cant be null");
+    }
+
     private Book createValidBook() {
         return Book.builder().title("As aventuras").author("Fulano").isbn("123").build();
     }
