@@ -4,6 +4,8 @@ import com.jjcdutra2015.libraryapi.exception.BusinessException;
 import com.jjcdutra2015.libraryapi.model.entity.Book;
 import com.jjcdutra2015.libraryapi.model.entity.repository.BookRepository;
 import com.jjcdutra2015.libraryapi.service.BookService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 
@@ -42,5 +44,10 @@ public class BookServiceImpl implements BookService {
             throw new IllegalArgumentException("Book cant be null");
         }
         return repository.save(book);
+    }
+
+    @Override
+    public Page<Book> find(Book filter, Pageable pageRequest) {
+        return null;
     }
 }
