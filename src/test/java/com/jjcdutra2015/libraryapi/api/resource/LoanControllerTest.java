@@ -6,7 +6,6 @@ import com.jjcdutra2015.libraryapi.model.entity.Book;
 import com.jjcdutra2015.libraryapi.model.entity.Loan;
 import com.jjcdutra2015.libraryapi.service.BookService;
 import com.jjcdutra2015.libraryapi.service.LoanService;
-import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -87,6 +86,6 @@ public class LoanControllerTest {
         mvc.perform(request)
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("errors", Matchers.hasSize(1)))
-                .andExpect(jsonPath("errors[0]").value("Book not found to passed isbn"));
+                .andExpect(jsonPath("errors[0]").value("Book not found for passed isbn"));
     }
 }

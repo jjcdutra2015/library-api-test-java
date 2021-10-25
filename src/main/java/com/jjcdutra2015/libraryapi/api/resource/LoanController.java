@@ -25,7 +25,7 @@ public class LoanController {
     public Long create(@RequestBody LoandDTO dto) {
         Book book = bookService.getBookByIsbn(dto.getIsbn())
                 .orElseThrow(
-                        () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Book not found to passed isbn")
+                        () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Book not found for passed isbn")
                 );
         Loan entity = Loan.builder().book(book).loanDate(LocalDate.now()).customer(dto.getCustomer()).build();
 
