@@ -1,12 +1,10 @@
 package com.jjcdutra2015.libraryapi.service;
 
+import com.jjcdutra2015.libraryapi.exception.BusinessException;
 import com.jjcdutra2015.libraryapi.model.entity.Book;
 import com.jjcdutra2015.libraryapi.model.entity.Loan;
-import com.jjcdutra2015.libraryapi.model.entity.repository.BookRepository;
 import com.jjcdutra2015.libraryapi.model.entity.repository.LoanRepository;
-import com.jjcdutra2015.libraryapi.service.impl.BookServiceImpl;
 import com.jjcdutra2015.libraryapi.service.impl.LoanServiceImpl;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,9 +15,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
@@ -43,6 +41,7 @@ public class LoanServiceTest {
 
         Loan loanSaved = Loan.builder().id(1l).book(book).customer("Fulano").loanDate(LocalDate.now()).build();
 
+        Mockito.when(repository.existsByBookAndNotReturned(book)).thenReturn(false);
         Mockito.when(repository.save(loan)).thenReturn(loanSaved);
 
         loanSaved = service.save(loan);
@@ -51,5 +50,21 @@ public class LoanServiceTest {
         assertThat(loanSaved.getBook()).isEqualTo(loan.getBook());
         assertThat(loanSaved.getCustomer()).isEqualTo(loan.getCustomer());
         assertThat(loanSaved.getLoanDate()).isEqualTo(loan.getLoanDate());
+    }
+
+    @Test
+    @DisplayName("Deve lançar erro ao emprestar um livro já emprestado")
+    public void loanedBookSaveTest() {
+        Book book = Book.builder().id(1l).isbn("123").build();
+        Loan loan = Loan.builder().book(book).customer("Fulano").loanDate(LocalDate.now()).build();
+
+        Mockito.when(repository.existsByBookAndNotReturned(book)).thenReturn(true);
+
+        Throwable exception = catchThrowable(() -> service.save(loan));
+
+        Mockito.verify(repository, Mockito.never()).save(loan);
+        assertThat(exception)
+                .isInstanceOf(BusinessException.class)
+                .hasMessage("Book already loaned");
     }
 }
