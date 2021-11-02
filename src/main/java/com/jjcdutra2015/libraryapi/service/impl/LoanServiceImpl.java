@@ -1,9 +1,12 @@
 package com.jjcdutra2015.libraryapi.service.impl;
 
+import com.jjcdutra2015.libraryapi.api.dto.LoanFilterDTO;
 import com.jjcdutra2015.libraryapi.exception.BusinessException;
 import com.jjcdutra2015.libraryapi.model.entity.Loan;
 import com.jjcdutra2015.libraryapi.model.entity.repository.LoanRepository;
 import com.jjcdutra2015.libraryapi.service.LoanService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -33,5 +36,10 @@ public class LoanServiceImpl implements LoanService {
     @Override
     public Loan update(Loan loan) {
         return repository.save(loan);
+    }
+
+    @Override
+    public Page<Loan> find(LoanFilterDTO filter, Pageable pageable) {
+        return null;
     }
 }

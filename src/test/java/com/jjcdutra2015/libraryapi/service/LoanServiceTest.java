@@ -102,7 +102,7 @@ public class LoanServiceTest {
         Mockito.verify(repository).save(loan);
     }
 
-    private Loan createLoan() {
+    public static Loan createLoan() {
         Book book = Book.builder().id(1l).isbn("123").build();
         return Loan.builder().book(book).customer("Fulano").loanDate(LocalDate.now()).build();
     }
