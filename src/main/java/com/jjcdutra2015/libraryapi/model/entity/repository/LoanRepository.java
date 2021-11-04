@@ -3,7 +3,6 @@ package com.jjcdutra2015.libraryapi.model.entity.repository;
 import com.jjcdutra2015.libraryapi.model.entity.Book;
 import com.jjcdutra2015.libraryapi.model.entity.Loan;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,5 +14,7 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
             " from Loan l where l.book = :book and (l.returned is null or l.returned is false)")
     boolean existsByBookAndNotReturned(@Param("book") Book book);
 
-    Page<Loan> findByBookIsbnOrCustomer(String isbn, String customer, Pageable pageable);
+    @Query(value = "select l from Loan l join l.book b where b.isbn = :isbn or l.customer = :customer")
+    Page<Loan> findByBookIsbnOrCustomer(
+            @Param("isbn") String isbn, @Param("customer") String customer, Pageable pageable);
 }
